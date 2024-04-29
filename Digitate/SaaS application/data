@@ -1,0 +1,74 @@
+DIGITATE SAAS Project
+
+How we will deploy our application in kubernetes?
+
+majority of skills in azure.
+
+So starting with the deployment. So see what happens is every application has its own set of requirements. The same is the case with our application.
+
+So it requires several databases for different kinds of data that it stores or it uses. And then definitely there is this backend machinery that is required for application to run. Take care of all these things.
+
+Here we used the setup where we had a set of virtual machines that were taking care of the infrastructure required for the application. And then there were these different systems including the post scripts.
+
+Then there is this Neo4j. And also the application has some requirements related to notice it. applications and stuff, right? So, application would want bulk mails and so on, right? So, for that, we used RabbitMQ earlier.
+
+Then, for cost of it, we went from VM to VMS. So, VMS is a scale set in virtual machine. The advantage that we get with VMS is, suppose, the element of your application is increased to scaling that you can configure with VM.
+
+So, what it does is, as soon as the requirement reaches the threshold, automatically increase the number of instances that we have to... So, that will stop application from going down because of certain Russian requirements, right?
+
+So, but from course perspective, not much of a difference between the MSS, right? It's the same just that we had here to scale. Now especially for cost optimization, we started exploring different ways and we got to know about containers, right?
+
+So that's when we decided to move to the data in case. So the solution will happen or percuber data says no one has it, right? We know that already. So the basic structure is it has a cluster, cluster will have several node groups, right?
+
+So node groups are like virtual machines at the back end. But here they are all managed by Kubernetes, right? So it is in a way in a very intelligent way to manage the deployments that we have. A lot of stuff is taken care of by them.
+
+So we don't have to worry much about the maintenance of the virtual machines which are at the back end. So if anything at all happens to them, Azure and Kubernetes manage a lot of it, right? The same thing happened with the other components as well.
+
+So we already have bigger servers in now in the virtual machines. It offers some advantages over the single one. This is very in terms of high -ended u can
+
+postgres also move from single to flex and neo4j also we have similar kind of setup now we have cluser based setup it offers data redundancy . it will put data in multple zones , multple avalabiltiy zones.so that if something happens to one zone then our data is safe at other zone. so we ensure that data it sync to sotre every time.
+
+we are moved from rabbitMQp to cloudMQP :- it is managed by eveything by and solve by them. if you use any instace then if they have any instace will came they will fix from them side.
+
+elbroate more aobut kuberntes:- we have cluster>node>multple pods, application required pod to running.it has lots of stuff it suppose to fix it is fail to run then they automatically fix by them self by comparing privious data. it will try to restore to back state.
+
+so that's why it became good choice for us. we save lots of money by choosing this kubernetes.
+
+How did you deployed the kubernetes in azure. first thing we need to setup all configurations [infra to ready according to the requirment] what i mean we will setup all things (needs to run application dependices) the script is done by terraform team.we save that code in devops repository , we used wisely regaruly there we have created very good strucutre of automation we need day to day base requirments.
+
+where in the infra deployments also we used repos to store multiple scripts to use daily jobs. for createding postgres , neo4j,kuberntes,teleport,cloudmqp instace and also link all things together.
+
+same thing when we mail to devops it trigger pipeline by logic app here it recives some data change alert then it will check that and then trigger pipeline to take of infra.
+
+for application managment there is team like application team they will manage the docker images and those docker images are pull and push by them into (ACR)Azure Container Registry , so acr it enable to pull or push that image need in script for deployingapplication it will took from them.
+
+application team would relases patches on weekly basis or mothly basis based on thier reuirment for new version for each time they updated at their.
+
+this is process of taking care for application deployment.
+
+for every customer have two env uat & prod there first ee deploy our application into the uat after it works fine then we will deploy it into the prod for accesing application to the customers.
+
+we don't have much exposer to docker but everything on backend depends on docker only.
+
+i am mainly focus on infrasetup that souces and all on azure. that is taken care by application team.
+
+teleport: cost optimstion, all customers clusters are privste we cannot access through public through internet,reson there is cutmer sensitive data, we cannot give them public access, how we r going to access ealy we configure j8mp server same like vent -> vm in customer en thorugh that .
+
+once we handover our application to the custmoer we are unble to access them so that we used tekleport here to access our application metrics .we know what the configuration metrics,we need that infra vm , clsute, supoort softwear status , but for every customer vm for this we placed teleport there for all customers. it will accesiable to private network (VPN)
+
+save money here also.
+
+postgre , vnet , uat & prod in order optimise the cost we didn't create two cluster we use two namespaces .
+
+azure logic app: if you have configure devps pipeline there are two ways
+
+pipline(who have don't have idea then they dont) put input run pipeline
+
+we have creaeted share point which is useful to understand app devlopments team.
+
+here the thing is we send a mainl logicapp it will respond for that mail it checks all things and then it will forward to the pipeline.
+
+several share point -> logic app ( it check logic chekcs) -> azure devops
+
+cloudmqp:- sending the mails , queues it will manage the alerts and incidents.
+
